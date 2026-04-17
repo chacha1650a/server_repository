@@ -5,6 +5,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class AuthenticationController extends HttpServlet {
             .id(1)
             .username("abcd")
             .password("1234")
-            .name("김준일")
+            .email("01058797023a@gmail.com")
             .build();
 
     @Override
@@ -24,18 +25,30 @@ public class AuthenticationController extends HttpServlet {
         System.out.println(requestBody);
 
         if (!loginUser.getUsername().equals(requestBody.get("username"))) {
-            errorResponse(resp, "사용자 정보가 일치하지 않습니다.");
+            ResponseEntity.builder()
+                    .status(403)
+                    .body("사용자 정보가 일치하지 않습니다.")
+                    .build()
+                    .response(resp);
+            return;
         }
-    }
 
-    private void errorResponse(HttpServletResponse resp, String message) throws IOException{
-        resp.setStatus(403);
-        resp.setContentType("application/json");
-        Map<String, Object> responseMap = Map.of(
-                "code", 403,
-                "message", message
-        );
-        resp.getWriter().println(JsonParserUtil.stringify(responseMap));
-    }
+        if (!loginUser.getPassword().equals(requestBody.get("password"))) {
+            ResponseEntity.builder()
+                    .status(403)
+                    .body("사용자 정보가 일치하지 않습니다.")
+                    .build()
+                    .response(resp);
+            return;
+        }
 
+        HttpSession session = req.getSession();
+        session.setAttribute("authentication", loginUser);
+        ResponseEntity.builder()
+                .status(200)
+                .body("로그인 완료!")
+                .build()
+                .response(resp);
+            return;
+    }
 }

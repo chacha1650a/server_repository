@@ -6,8 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-// JSP는 <%%> 사이에 Java 문법을 사용할 수 있다는 장점이 있다.
-// HTML과 Java가 합쳐짐.
 <%
     String name = (String) request.getAttribute("name");
     String year = request.getParameter("year");
@@ -25,7 +23,6 @@
 
 </head>
 <body>
-    <%= name%>
 
 </body>
 </html>
